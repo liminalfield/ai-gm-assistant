@@ -1,111 +1,80 @@
-# RPG Rules Assistant
+# AI GM Assistant
 
-This project is an AI-enhanced rules assistant for tabletop RPGs. It enables players and game masters to semantically search through RPG PDFs and ask AI-powered questions about the rules. The assistant uses ChromaDB for document retrieval and a quantized LLaMA-2 model (run locally) for natural language understanding.
+## Project Overview
 
----
+**AI GM Assistant** is an AI-enhanced rules assistant for tabletop role-playing games. It allows players and game masters to **semantically search** their RPG rulebook PDFs and ask natural-language questions about the rules, getting answers that are grounded in the actual rule text. The assistant solves the problem of flipping through rulebooks by using AI to quickly retrieve relevant rules and explain them. It uses a local vector database (ChromaDB) to index the rulebooks and a quantized LLaMA-2 13B chat model to generate answers, so everything runs locally without requiring an internet connection. In short, AI GM Assistant can serve as your personal rules reference librarian, fetching exact rules and providing clear answers during gameplay.
 
-## 🚀 Features
+**Key Features:**
+- **Semantic Search** – Find relevant rules by meaning, not just keywords.
+- **Contextual AI Answers** – Get AI-generated answers that are grounded in the rulebooks.
+- **PDF Ingestion Pipeline** – Easily add your RPG PDFs.
+- **Web Interface** – A React-based frontend for a user-friendly Q&A experience.
+- **Fully Local LLM** – Runs a quantized LLaMA-2 model (4-bit).
+- **FastAPI Backend** – Lightweight server with clean REST endpoints.
 
-- 🔍 **Semantic Search**: Query embedded RPG rulebooks using ChromaDB and SentenceTransformers.
-- 🤖 **AI-Powered Responses**: Get contextual answers grounded in actual rulebooks using a local LLaMA-2 model.
-- 📄 **PDF Ingestion**: Converts, chunks, and embeds PDFs using Markdown conversion and sentence embeddings.
-- 🧠 **Local LLM Integration**: Hugging Face Transformers with 4-bit quantized LLaMA-2.
-- 🌐 **FastAPI Backend**: Clean, modular Python API for integration and use.
-- 🧪 **Makefile Convenience**: Includes Makefile shortcuts for local development and processing.
+## How It Works
 
----
+This project uses Retrieval-Augmented Generation (RAG) to combine semantic document search with LLM-based answer generation. PDF rulebooks are ingested and embedded into a ChromaDB vector store. When a user asks a question, relevant text chunks are retrieved and passed to an LLM to generate a grounded answer.
 
-## 🧱 Tech Stack
+## Getting Started
 
-| Component         | Tech                                        |
-|------------------|---------------------------------------------|
-| API Framework     | FastAPI                                     |
-| Embedding Model   | `sentence-transformers/all-MiniLM-L6-v2`    |
-| Vector DB         | ChromaDB (persistent local storage)         |
-| LLM               | LLaMA-2-13B-chat (4-bit, Hugging Face)      |
-| Markdown Parsing  | `markitdown` (Microsoft PDF converter)      |
+### Prerequisites
 
----
+- Python 3.10+
+- Node.js v18+
+- Hugging Face account (for LLaMA-2 download)
 
-## 🗂 Folder Structure
-
-```
-project-root/
-├── ai_gm_assistant/       # Core logic for PDF processing, retrieval, and LLM interface
-│   ├── hf_integration.py  # Loads and queries LLaMA-2 model
-│   ├── main.py            # FastAPI entrypoint
-│   ├── retriever.py       # ChromaDB and embedding logic
-│   └── process_pdfs.py    # PDF ingestion, markdown conversion, chunking
-├── data/
-│   ├── pdfs/              # Place your RPG PDFs here
-│   └── rpg_sources_db/    # ChromaDB persistent storage
-├── env.clean              # Sample environment variables (rename to `.env`)
-├── Makefile               # Developer shortcuts
-├── requirements.txt
-└── README.md
-```
-
----
-
-## 🔑 Setup Instructions
-
-### 1. Environment Variables
-
-Copy `env.clean` to `.env` before running anything:
+### Backend Setup
 
 ```bash
+git clone https://github.com/liminalfield/ai-gm-assistant.git
+cd ai-gm-assistant
+python -m venv venv
+source venv/bin/activate  # or .\venv\Scripts\activate on Windows
+pip install -r requirements.txt
 cp env.clean .env
+huggingface-cli login
+python ai_gm_assistant/process_pdfs.py
+make run
 ```
 
-Ensure the `.env` includes values like:
+### Frontend Setup
 
-- `CHROMA_INDEX_PATH=./data/rpg_sources_db`
-- `EMBEDDING_MODEL_NAME=all-MiniLM-L6-v2`
-- `RETRIEVAL_RESULTS=8`
-- `ALLOWED_ORIGINS=http://localhost:5173`
+```bash
+cd webapp
+npm install
+npm run dev
+```
 
-### 2. Hugging Face Authentication
+Navigate to `http://localhost:5173` in your browser.
 
-If you're using gated models (like `meta-llama/Llama-2-13b-chat-hf`), you **must be authenticated with Hugging Face**. There are two options:
+## Usage
 
-- Login via CLI:
-  ```bash
-  huggingface-cli login
-  ```
-- Or set the environment variable in your `.env`:
-  ```env
-  HF_TOKEN=your_huggingface_token
-  ```
+- **Basic Search**: View matching rulebook passages.
+- **AI Search**: AI answers based on retrieved rule text.
+- **Direct AI**: AI answers from model knowledge only.
 
-The code expects access to Hugging Face via `use_auth_token=True`.
+## API Endpoints
 
----
+| Method | Endpoint     | Description                        |
+|--------|--------------|------------------------------------|
+| GET    | /search      | Semantic document search           |
+| GET    | /ai-search   | RAG: Retrieval-Augmented Answering |
+| GET    | /ai-direct   | Direct LLM query                   |
 
+## Tech Stack
 
-## 🧪 API Endpoints
+- **Frontend**: React + TypeScript + Vite
+- **Backend**: FastAPI + Uvicorn
+- **LLM**: LLaMA-2 13B Chat (4-bit, HF Transformers)
+- **Vector DB**: ChromaDB
+- **Embeddings**: all-MiniLM-L6-v2
+- **PDF Processing**: markitdown + LangChain
 
-| Method | Endpoint         | Description                         |
-|--------|------------------|-------------------------------------|
-| GET    | `/search`        | Returns semantic matches from ChromaDB |
-| GET    | `/ai-search`     | Retrieves + answers with context-grounded LLM |
-| GET    | `/ai-direct`     | Sends query to the LLM with no external context |
+## License
 
----
-
-## 💬 Example Queries
-
-- "How does weather affect overland travel?"
-- "What are the rules for grappling?"
-- "Can you flank an enemy in difficult terrain?"
+Apache 2.0. Contributions must be made under the same license.
 
 ---
 
-## 📜 License
-
-Apache 2.0
-
----
-
-## 🙌 Credits
-
-Built by [Su Soloway](https://www.linkedin.com/in/...) and [Oluf Andrews](https://www.linkedin.com/in/...) using FastAPI, ChromaDB, and Hugging Face Transformers.
+Enjoy building with AI GM Assistant!
