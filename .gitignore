@@ -1,0 +1,63 @@
+# IDE - PyCharm & WebStorm
+.idea/
+*.iml
+*.iws
+*.ipr
+.idea_modules/
+out/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.coverage
+htmlcov/
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# React/Node.js
+node_modules/
+.npm
+.pnp
+.pnp.js
+coverage/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Project specific
+data/
+*.pdf
+rpg_sources_db/
+processed_files.json
+
+# Misc
+.DS_Store
+Thumbs.db
